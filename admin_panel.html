@@ -1,0 +1,97 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Admin Panel - Free Fire Tournament</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        #loginSection, #adminSection { max-width: 600px; margin: auto; }
+        input[type="text"], input[type="password"], input[type="number"] {
+            width: 100%; padding: 8px; margin: 8px 0; box-sizing: border-box;
+        }
+        button { background-color: #ff4500; color: white; padding: 10px; border: none; cursor: pointer; width: 100%; }
+        button:hover { background-color: #e03e00; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+        th { background-color: #ff4500; color: white; }
+        #adminSection { display: none; }
+        #message { color: red; text-align: center; }
+    </style>
+</head>
+<body>
+    <div id="loginSection">
+        <h2>Admin Login</h2>
+        <input type="text" id="username" placeholder="Username" />
+        <input type="password" id="password" placeholder="Password" />
+        <button onclick="login()">Login</button>
+        <p id="message"></p>
+    </div>
+
+    <div id="adminSection">
+        <h2>Registered Players</h2>
+        <table id="playersTable">
+            <thead><tr><th>Player Name</th><th>Points</th></tr></thead>
+            <tbody></tbody>
+        </table>
+
+        <h3>Update Leaderboard</h3>
+        <form id="updateForm" onsubmit="updatePoints(event)">
+            <input type="text" id="updatePlayerName" placeholder="Player Name" required />
+            <input type="number" id="updatePoints" placeholder="Points" required />
+            <button type="submit">Update Points</button>
+        </form>
+    </div>
+
+    <script>
+        const adminUser = "admin";
+        const adminPass = "1234";
+
+        let players = [
+            { name: "Player1", points: 500 },
+            { name: "Player2", points: 400 },
+            { name: "Player3", points: 300 }
+        ];
+
+        function login() {
+            const user = document.getElementById("username").value;
+            const pass = document.getElementById("password").value;
+            const message = document.getElementById("message");
+
+            if(user === adminUser && pass === adminPass) {
+                document.getElementById("loginSection").style.display = "none";
+                document.getElementById("adminSection").style.display = "block";
+                message.textContent = "";
+                renderPlayers();
+            } else {
+                message.textContent = "Invalid username or password!";
+            }
+        }
+
+        function renderPlayers() {
+            const tbody = document.querySelector("#playersTable tbody");
+            tbody.innerHTML = "";
+            players.forEach(player => {
+                tbody.innerHTML += `<tr><td>${player.name}</td><td>${player.points}</td></tr>`;
+            });
+        }
+
+        function updatePoints(event) {
+            event.preventDefault();
+            const name = document.getElementById("updatePlayerName").value.trim();
+            const pts = parseInt(document.getElementById("updatePoints").value);
+
+            const player = players.find(p => p.name.toLowerCase() === name.toLowerCase());
+            if(player) {
+                player.points = pts;
+            } else {
+                players.push({ name: name, points: pts });
+            }
+            renderPlayers();
+            document.getElementById("updateForm").reset();
+            alert("Leaderboard updated!");
+        }
+    </script>
+</body>
+</html>
